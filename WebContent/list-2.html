@@ -1,0 +1,446 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>员工列表</title>
+
+
+<link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        
+</head>
+<body>
+
+<!-- 员工修改 -->
+<div class="modal fade" id="userUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" >员工修改</h4>
+      </div>
+      <!-- 弹出框 -->
+      <div class="modal-body">
+        <form class="form-horizontal" name="form_update" id="form_update">
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label">username</label>
+			    <div class="col-sm-10">
+			        <p class="form-control-static" id="username_update"></p>
+			      <span id="username_block" class="help-block"></span>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label">password</label>
+			    <div class="col-sm-10">
+			      <input type="password" class="form-control" name="password_update" id="password_update" placeholder="password">
+			      <span id="password_block" class="help-block"></span>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label">age</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" name="age_update" id="age_update" placeholder="age">
+			      <span id="age_block" class="help-block"></span>
+			    </div>
+			  </div>
+   		 </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="btn-user-update">更新</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 员工添加 -->
+<div class="modal fade" id="userAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">员工添加</h4>
+      </div>
+      <!-- 弹出框 -->
+      <div class="modal-body">
+        <form class="form-horizontal" name="form" id="form">
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label">id</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" name="id_add" id="id_add" placeholder="id">
+			      <span id="id_block" class="help-block"></span>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label">username</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" name="username_add" id="username_add" placeholder="username">
+			      <span id="username_block" class="help-block"></span>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label">password</label>
+			    <div class="col-sm-10">
+			      <input type="password" class="form-control" name="password_add" id="password_add" placeholder="password">
+			      <span id="password_block" class="help-block"></span>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label">age</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" name="age_add" id="age_add" placeholder="age">
+			      <span id="age_block" class="help-block"></span>
+			    </div>
+			  </div>
+    </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="btn-user-save">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 显示标题 -->
+<div class="container">
+	<div class="row"></div>
+	<div class="col-md-12">
+ 		<h1>SSM_CRUD</h1>
+    </div>
+    <!--按钮-->
+ 	<div class="row">
+ 		<div class="col-md-4 col-md-offset-12">
+ 			<button class="btn btn-primary" id="btn_user_add_modal">新增</button>
+ 			<button class="btn btn-danger" id="btn_user_delete_all">删除</button>
+ 		</div>  	
+ 	</div>
+
+		<!--表格数据-->
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-hover" id="user_table">
+		 		<tr>
+		 			<th>
+		 				<input type="checkbox" id="check_all"/>
+		 			</th>
+					<!-- <th>#</th> -->
+					<th>id</th>
+					<th>username</th>
+					<th>age</th>
+					<th>操作</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<script type="text/javascript">
+	
+	//获取项目路径http://localhost:8080/ssmdemo
+	function getPath(){
+		var pathName = document.location.pathname;
+		var index = pathName.substr(1).indexOf("/");
+		var result = pathName.substr(0,index+1);
+		return result;
+	};
+	
+	//清空表单数据
+	function reset_form(ele){
+		$(ele)[0].reset;
+		//清空表单样式，表单的所有元素remove掉has-*
+		$(ele).find("*").removeClass("has-error has-success");
+		$(ele).find(".help-block").text("");
+	};
+	
+	//校验表单数据
+	function validate_add_form(){
+		//校验username;
+		debugger;
+		var username = $("#username_add").val();
+		//中文的话是2-5个字符，英文加数字3-10位
+		var regname = /(^[a-zA-Z0-9_-]{3,10}$)|(^[\u2E80-\u9FFF]{2,5})/;
+		if(!regname.test(username)){
+			show_validate_msg("#username_add", "error", "用户名为3-10位的英文数字组合或者2-5位的中文数字");
+			return false;
+		}else{
+			show_validate_msg("#username_add", "success", "");
+		}
+		
+		var age = $("#age_add").val();
+		var regage = /^((1[0-5])|[1-9])?\d$/;
+		if(!regage.test(age)){
+			show_validate_msg("#age_add", "error", "年龄不合法");
+			return false;
+		}else{
+			show_validate_msg("#age_add", "success", "");
+			return true;//当校验完年龄之后，没问题就能返回true了
+		}
+	};
+	
+	//显示校验结果的显示信息
+	function show_validate_msg(ele, status, msg){
+		//清楚当前元素的状态
+		$(ele).parent().removeClass("has-success has-error");
+		$(ele).next("span").text("");
+		if("success" == status){
+			$(ele).parent().addClass("has-success");
+			$(ele).next("span").text(msg);
+		}else if("error" == status){
+			$(ele).parent().addClass("has-error");
+			$(ele).next("span").text(msg);
+			
+		}
+	};
+	
+	$(document).ready(function(){
+		$(function(){
+			var _projPath=getPath();
+			$.ajax({
+		        url:_projPath+'/userRes/getAllUser',
+		        type:'get',
+		        dataType:'json',
+		        success:function(data){
+		        	//调试时加上debugger
+		            //方法中传入的参数data为后台获取的数据
+		            for(var i = 0;i < data.length;i++) 
+		            {	//table添加数据
+		            	var checkBoxTd = $("<td><input type='checkbox' class='check_item'/></td>");
+		            	var list_id = $("<td></td>").append(data[i].id);
+		            	var list_username = $("<td></td>").append(data[i].username);
+		            	var list_age = $("<td></td>").append(data[i].age);
+		            	
+		            	var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
+		            				.append($("<span></span>").addClass("glyphicon glyphicon-pencil"));
+		            	
+		            	editBtn.attr("edit-id",data[i].id);
+		            	var delBtn = $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
+        							.append($("<span></span>").addClass("glyphicon glyphicon-trash"));
+		            	
+		            	//为删除按钮添加一个自定义的属性来表示当前删除的userid
+		            	
+		            	delBtn.attr("delete-id",data[i].id);
+		            	var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
+		            	var finalrow = list_id + list_id + list_username + list_age + btnTd;
+		            	
+		            	$("<tr></tr>").append(checkBoxTd).append(list_id)
+		            	.append(list_id).append(list_username).append(list_age)
+		            	.append(btnTd).appendTo("#user_table tbody");
+		            }
+		        }
+		    });
+		});
+		
+		//点击新增按钮弹出模态框
+		$("#btn_user_add_modal").click(function(){
+			//清除表单数据(表单重置)
+			//jquery没有reset方法，dom对象有,reset_form并不能完全清空input框中的值
+			$("#id_add").val("");
+			$("#username_add").val("");
+			$("#password_add").val("");
+			$("#age_add").val("");
+			reset_form("#userAddModal form");
+			$("#userAddModal form")[0].reset();
+			//弹出模态框
+			$("#userAddModal").modal({
+				backdrop:"static"
+			});
+		});
+		//校验用户名是否可用,发送给UserCheck类负责后端校验
+		$("#username_add").change(function(){
+			//debugger;
+			var username=$("#username_add").val();
+			//var username = this.value();
+			$.ajax({
+				url:getPath()+'/userChe/'+username,
+				type:'post',
+				success:function(result){
+					if(result.code == 100){
+						show_validate_msg("#username_add","success","用户名可用");
+						$("#btn-user-save").attr("ajax-va","success");
+						//给"保存"按钮添加一个属性 内容为success
+					}else{
+						show_validate_msg("#username_add","error",result.extend.va_msg);
+						$("#btn-user-save").attr("ajax-va","error");
+					}
+				}
+			});
+		});
+		//保存员工,给btn-ser-save添加一个属性ajax-va，前端输入数据合法时,ajax-va返回success,
+		//此时将输入数据发送给/userSav/addUser(UserSave类中)
+		$("#btn-user-save").click(function(){
+			//1、模态框中填写的表单数据提交给服务器进行保存
+			//对要提交给服务器的数据进行校验
+			if(!validate_add_form()){//注销此段代码就是绕过前端校验，在后台进行校验
+				return false;
+			};
+			//1、判断之前的ajax用户名校验是否成功。如果成功
+			if($("#btn-user-save").attr("ajax-va")=="error"){
+				//判断这个属性的值是否成功
+				return false;
+			}			
+					
+			//2、发送ajax请求保存数据
+			var id=$("#id_add").val();
+			var username=$("#username_add").val();
+			var password=$("#password_add").val();
+			var age=$("#age_add").val();
+			//debugger;
+			$.ajax({
+				url:getPath()+'/userSav/addUser',
+				type:'post',
+				contentType:"application/json",
+				data:JSON.stringify({
+					"id":id,
+					"username":username,
+					"password":password,
+					"age":age
+				}),
+				datatype:'json',
+				success:function(result){
+					if(result.code == 100){
+					//后端校验成功,前端关闭模态框
+						$("#userAddModal").modal('hide');
+					}else{
+						//后端数据校验失败
+						//有哪个字段的错误信息就显示哪个错误字段
+						/* if(undefined != result.extend.errorFields.username){
+							//显示用户名的错误信息
+							show_validate_msg("#username_add", "error", result.extend.errorFields.username);
+						}
+						if(undefined != result.extend.errorFields.age){
+							//显示年龄的错误信息
+							show_validate_msg("#age_add", "error", result.extend.errorFields.age);
+						}  */
+						
+					}
+				}
+			});
+		}); 
+	
+	});
+	//单个删除,前往UserDelete类进行处理
+	$(document).on("click",".delete_btn",function(){
+		//1、弹出确认删除对话框
+		//当前点击的按钮的祖先tr的第三个元素username
+
+		var username = $(this).parents("tr").find("td:eq(2)").text();
+		var id = $(this).attr("delete-id");
+		if(confirm("确认删除【"+username+"】吗?")){
+			//确认，发送ajax请求删除即可
+			$.ajax({
+				url:getPath()+'/userDel/'+id,
+				type:'delete',
+				success:function(result){
+
+					//处理成功之后，回到本页
+				}
+			});
+		}
+	});
+	//编辑模态框，因为是通过id查找内容进行编辑，所以给编辑按钮加上一个属性attr("edit-id")，
+	//同时点击更新按钮时，这个属性被传递给了按钮
+	$(document).on("click",".edit_btn",function(){
+		//bug:之前输入框的输入内容总是会出现
+		$("#id_update").val("");
+		$("#username_update").val("");
+		$("#password_update").val("");
+		$("#age_update").val("");
+		//更新时需要id去查数据
+		getUser($(this).attr("edit-id"));
+		
+		//把员工id传递给模态框的更新按钮
+		$("#btn-user-update").attr("edit-id",$(this).attr("edit-id"));
+		$("#userUpdateModal").modal({
+			backdrop:"static"
+		});
+		
+	});
+	function getUser(id){
+		$.ajax({
+			url:getPath()+'/userUpd/updateUser',
+			type:'post',
+			contentType:"application/json",
+			data:id,
+			datatype:'json',
+			success:function(result){
+				var userData = result.extend.updateUser;
+				$("#username_update").text(userData.username);
+				$("#password_update").val(userData.password);
+				$("#age_update").val(userData.age)
+			}
+		});
+	}
+	
+	//点击更新，更新员工信息，前往UserUpdate类
+	$("#btn-user-update").click(function(){
+		//验证年龄是否合法
+		//1、校验邮箱信息
+		var age = $("#age_update").val();
+		var regage = /^((1[0-5])|[1-9])?\d$/;
+		if(!regage.test(age)){
+			show_validate_msg("#age_update", "error", "年龄不合法");
+			return false;
+		}else{
+			show_validate_msg("#age_update", "success", "");
+		}
+		
+		//2、发送ajax请求 保存更新的员工数据，发送put请求
+		var id = $(this).attr("edit-id");
+		var password = $("#password_update").val();
+		$.ajax({
+			url:getPath()+'/userUpd/saveUser',
+			type:'post',
+			contentType:"application/json",
+			data:JSON.stringify({
+				"id":id,
+				"password":password,
+				"age":age
+			}),
+			datatype:'json',
+			success:function(result){
+				$("#userUpdateModal").modal("hide");
+			}
+		})
+	});
+	
+	//完成全选/全不选
+	$("#check_all").click(function(){
+		//原因是定义input框时没有定义checked属性，用prop
+		//attr获取自定义,prop修改和读取dom原生属性的值
+		$(".check_item").prop("checked",$(this).prop("checked"));
+	});
+	//所有的check_item也要绑定时间，因为是后来加入的，所以用on
+	$(document).on("click",".check_item",function(){
+		//判断当前选择中的元素是否选满
+		var flag = $(".check_item:checked").length == $(".check_item").length;
+		$("#check_all").prop("checked",flag);
+	});
+	
+	//点击全部删除，就批量删除
+	$("#btn_user_delete_all").click(function(){
+		var usernames = "";
+		var del_idstr = "";
+		$.each($(".check_item:checked"),function(){
+			usernames += $(this).parents("tr").find("td:eq(2)").text()+",";
+			//组装员工id字符串
+			del_idstr += $(this).parents("tr").find("td:eq(1)").text()+"-";
+		});
+		//去除username中多余的逗号
+		usernames = usernames.substring(0, usernames.length-1);
+		del_idstr = del_idstr.substring(0, del_idstr.length-1);
+		if(confirm("确认删除【"+usernames+"】吗?")){
+			//发送ajax请求删除
+			$.ajax({
+				url:getPath()+'/userDel/'+del_idstr,
+				type:'delete',
+				success:function(result){
+					alert("删除成功");
+				}
+			});
+		}
+	});
+ </script>
+</div>
+</body>
+</html>

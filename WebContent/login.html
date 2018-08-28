@@ -1,0 +1,79 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>login</title>
+	<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript" ></script>
+	<link  rel="stylesheet" href="static/login/css/style.css">
+</head>
+<body>
+  <div class="wrapper">
+  	<div class="container">
+  	 <h1>Welcome</h1>
+		<form id="form" method="get">
+			<input type="text" name="username" id="username" 
+					placeholder="Username"	autocomplete="off"/>
+		    <input type="password" name="password" id="password" 
+		   			placeholder="Password" autocomplete="off"/>
+			<button type="submit"  id="button">submit</button>
+	     </form>
+	  </div>
+	   <ul class="bg-bubbles">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+</div>
+	<script type="text/javascript">
+	
+		$(document).ready(function(){
+			function getPath(){
+				var pathName = document.location.pathname;
+				var index = pathName.substr(1).indexOf("/");
+				var result = pathName.substr(0,index+1);
+				return result;
+			}
+			
+			$("#button").on("click",function(){
+				var username=$("#username").val();
+				var password=$("#password").val();
+				var _projPath=getPath();
+				$.ajax({
+						url:_projPath+'/userRes/checkUser',
+						async:true,
+						type:'post',
+						contentType:"application/json",
+						data:JSON.stringify({
+							"username":username,
+							"password":password
+						}),
+						datatype:'json',
+						success:function(data){
+							alert(data)
+							if(data!=null){
+								alert("欢迎:"+data.username);
+								window.location.href="list-2.html";
+							}else{
+								alert("用户输入有误"+username+" "+password);
+							}
+						},
+						error:function(xhr,textStatus,errorThrown){
+							alert("出错了!");
+						}
+				});
+			});
+		});
+		 //$('form').fadeOut(500);登录成功后显示welcome,输入框消失
+		 //$('.wrapper').addClass('form-success');
+	</script>
+
+</body>
+</html>

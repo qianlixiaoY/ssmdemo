@@ -1,0 +1,29 @@
+jq ready()的方法就是Dom Ready，他的作用或者意义就是:在DOM加载完成后就可以可以对DOM进行操作。
+一
+获取项目名
+var pathName = document.location.pathname;
+/ssmdemo/checkUser.html 
+var index = pathName.substr(1).indexOf("/");
+7
+var result = pathName.substr(0,index+1);
+/ssmdemo
+
+async:true,(默认)，异步方式，$.Ajax执行后，会继续执行ajax后面的脚本，
+直到服务器端返回数据后，触发$.Ajax里的success方法，这时候执行的是两个线程
+
+var temp;
+$.ajax({
+   async: false,
+   type : "POST",
+   url : defaultPostData.url,
+   dataType : 'json',
+   success : function(data) {
+      temp=data;
+   }
+});
+alert(temp);
+这个ajax请求为同步请求，在没有返回值之前，alert(temp)是不会执行的。
+
+如果async设置为：true，则不会等待ajax请求返回的结果，会直接执行ajax后面的语句：alert(temp);
+
+使用contentType: “application/json”则data只能是json字符串
