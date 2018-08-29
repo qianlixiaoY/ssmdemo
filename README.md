@@ -1,2 +1,3 @@
 # ssmdemo
-ssm practice
+更改jdbc的properties中的账号与密码
+更改generatorConfig.xml中的connectionURL
